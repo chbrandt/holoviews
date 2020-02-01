@@ -14,7 +14,7 @@ from ...core.util import basestring, isfinite
 from ...element import HexTiles
 from ...util.transform import dim
 from .element import ColorbarPlot
-from .styles import line_properties, fill_properties
+from .styles import base_properties, line_properties, fill_properties
 
 
 class hex_binning(Operation):
@@ -135,11 +135,11 @@ class HexTilesPlot(ColorbarPlot):
                                      allow_None=True, doc="""
       Index of the dimension from which the sizes will the drawn.""")
 
-    style_opts = ['cmap', 'color', 'scale', 'visible'] + line_properties + fill_properties
+    style_opts = ['cmap', 'scale'] + base_properties + line_properties + fill_properties
 
     _plot_methods = dict(single='hex_tile')
 
-    _nonvectorized_styles = ['cmap', 'line_dash']
+    _nonvectorized_styles = ['cmap', 'line_dash'] + base_properties
 
     def get_extents(self, element, ranges, range_type='combined'):
         xdim, ydim = element.kdims[:2]

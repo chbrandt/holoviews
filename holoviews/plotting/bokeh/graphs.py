@@ -15,8 +15,10 @@ from ..mixins import ChordMixin
 from ..util import process_cmap, get_directed_graph_paths
 from .chart import ColorbarPlot, PointPlot
 from .element import CompositeElementPlot, LegendPlot
-from .styles import line_properties, fill_properties, text_properties, rgba_tuple
-
+from .styles import (
+    base_properties, line_properties, fill_properties, text_properties,
+    rgba_tuple
+)
 
 
 class GraphPlot(CompositeElementPlot, ColorbarPlot, LegendPlot):
@@ -54,8 +56,8 @@ class GraphPlot(CompositeElementPlot, ColorbarPlot, LegendPlot):
     _style_groups = {'scatter': 'node', 'multi_line': 'edge', 'patches': 'edge',
                      'bezier': 'edge'}
 
-    style_opts = (['edge_'+p for p in fill_properties+line_properties] +
-                  ['node_'+p for p in fill_properties+line_properties] +
+    style_opts = (['edge_'+p for p in base_properties+fill_properties+line_properties] +
+                  ['node_'+p for p in base_properties+fill_properties+line_properties] +
                   ['node_size', 'cmap', 'edge_cmap', 'node_cmap', 'node_radius'])
 
     _nonvectorized_styles =  ['cmap', 'edge_cmap', 'node_cmap']
@@ -388,10 +390,9 @@ class ChordPlot(ChordMixin, GraphPlot):
     # Map each glyph to a style group
     _style_groups = {'scatter': 'node', 'multi_line': 'edge', 'text': 'label'}
 
-    style_opts = (GraphPlot.style_opts + ['label_'+p for p in text_properties])
+    style_opts = (GraphPlot.style_opts + ['label_'+p for p in base_properties+text_properties])
 
     _draw_order = ['multi_line_2', 'graph', 'text_1']
-
 
     def _sync_arcs(self):
         arc_renderer = self.handles['multi_line_2_glyph_renderer']
@@ -486,8 +487,8 @@ class TriMeshPlot(GraphPlot):
     filled = param.Boolean(default=False, doc="""
         Whether the triangles should be drawn as filled.""")
 
-    style_opts = (['edge_'+p for p in line_properties+fill_properties] +
-                  ['node_'+p for p in fill_properties+line_properties] +
+    style_opts = (['edge_'+p for p in base_properties+line_properties+fill_properties] +
+                  ['node_'+p for p in base_properties+fill_properties+line_properties] +
                   ['node_size', 'cmap', 'edge_cmap', 'node_cmap'])
 
     # Declares that three columns in TriMesh refer to edges

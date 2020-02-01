@@ -8,7 +8,7 @@ from bokeh.models import DatetimeAxis, CustomJSHover
 from ...core.util import cartesian_product, dimension_sanitizer, isfinite
 from ...element import Raster
 from .element import ElementPlot, ColorbarPlot
-from .styles import line_properties, fill_properties, mpl_to_bokeh
+from .styles import base_properties, line_properties, fill_properties, mpl_to_bokeh
 from .util import colormesh
 
 
@@ -21,7 +21,7 @@ class RasterPlot(ColorbarPlot):
     show_legend = param.Boolean(default=False, doc="""
         Whether to show legend for the plot.""")
 
-    style_opts = ['cmap', 'alpha', 'visible']
+    style_opts = ['cmap', 'alpha'] + base_properties
 
     _nonvectorized_styles = style_opts
 
@@ -124,7 +124,7 @@ class RGBPlot(ElementPlot):
 
     padding = param.ClassSelector(default=0, class_=(int, float, tuple))
 
-    style_opts = ['alpha', 'visible']
+    style_opts = ['alpha'] + base_properties
 
     _nonvectorized_styles = style_opts
 
@@ -203,7 +203,7 @@ class QuadMeshPlot(ColorbarPlot):
     show_legend = param.Boolean(default=False, doc="""
         Whether to show legend for the plot.""")
 
-    style_opts = ['cmap', 'color', 'visible'] + line_properties + fill_properties
+    style_opts = ['cmap'] + base_properties + line_properties + fill_properties
 
     _nonvectorized_styles = style_opts
 

@@ -21,8 +21,10 @@ from ...util.transform import dim
 from ..mixins import AreaMixin, BarsMixin, SpikesMixin
 from ..util import compute_sizes, get_min_distance
 from .element import ElementPlot, ColorbarPlot, LegendPlot
-from .styles import (expand_batched_style, line_properties, fill_properties,
-                     mpl_to_bokeh, rgb2hex)
+from .styles import (
+    expand_batched_style, base_properties, line_properties, fill_properties,
+    mpl_to_bokeh, rgb2hex
+)
 from .util import bokeh_version, categorize_array
 
 
@@ -333,8 +335,9 @@ class CurvePlot(ElementPlot):
         default is 'linear', other options include 'steps-mid',
         'steps-pre' and 'steps-post'.""")
 
-    style_opts = line_properties + ['visible']
-    _nonvectorized_styles = line_properties + ['visible']
+    style_opts = base_properties + line_properties
+
+    _nonvectorized_styles = style_opts
 
     _plot_methods = dict(single='line', batched='multi_line')
     _batched_style_opts = line_properties
@@ -400,10 +403,11 @@ class CurvePlot(ElementPlot):
 
 class HistogramPlot(ColorbarPlot):
 
-    style_opts = line_properties + fill_properties + ['cmap', 'visible']
+    style_opts = base_properties + fill_properties + line_properties + ['cmap']
+
     _plot_methods = dict(single='quad')
 
-    _nonvectorized_styles = ['line_dash', 'visible']
+    _nonvectorized_styles = ['line_dash'] + base_properties
 
     selection_display = BokehOverlaySelectionDisplay()
 
@@ -508,9 +512,9 @@ class SideHistogramPlot(HistogramPlot):
 
 class ErrorPlot(ColorbarPlot):
 
-    style_opts = line_properties + ['lower_head', 'upper_head', 'visible']
+    style_opts = base_properties + line_properties + ['lower_head', 'upper_head']
 
-    _nonvectorized_styles = ['line_dash', 'visible']
+    _nonvectorized_styles = ['line_dash'] + base_properties
 
     _mapping = dict(base="base", upper="upper", lower="lower")
 
@@ -571,7 +575,9 @@ class SpreadPlot(ElementPlot):
 
     padding = param.ClassSelector(default=(0, 0.1), class_=(int, float, tuple))
 
-    style_opts = line_properties + fill_properties + ['visible']
+    style_opts = base_properties + fill_properties + line_properties
+
+    _nonvectorized_styles = style_opts
 
     _no_op_style = style_opts
 
@@ -665,7 +671,9 @@ class SpikesPlot(SpikesMixin, ColorbarPlot):
                                       allow_None=True, doc="""
         Deprecated in favor of color style mapping, e.g. `color=dim('color')`""")
 
-    style_opts = (['color', 'cmap', 'palette', 'visible'] + line_properties)
+    style_opts = (['cmap', 'palette'] + base_properties + line_properties)
+
+    _nonvectorized_styles = base_properties + ['cmap']
 
     _plot_methods = dict(single='segment')
 
@@ -752,11 +760,10 @@ class BarPlot(BarsMixin, ColorbarPlot, LegendPlot):
                                       allow_None=True, doc="""
         Deprecated in favor of color style mapping, e.g. `color=dim('color')`""")
 
-    style_opts = (line_properties
-                  + fill_properties
-                  + ['width', 'bar_width', 'cmap', 'visible'])
+    style_opts = (base_properties + fill_properties + line_properties +
+                  ['bar_width', 'cmap'])
 
-    _nonvectorized_styles = ['bar_width', 'cmap', 'width', 'visible']
+    _nonvectorized_styles = ['bar_width', 'cmap', 'width'] + base_properties
 
     _plot_methods = dict(single=('vbar', 'hbar'))
 

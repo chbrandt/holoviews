@@ -4,17 +4,14 @@ import numpy as np
 
 from ..mixins import GeomMixin
 from .element import ColorbarPlot, LegendPlot
-from .styles import line_properties, fill_properties
+from .styles import base_properties, fill_properties, line_properties
 
 
 class SegmentPlot(GeomMixin, ColorbarPlot):
-    """
-    Segments are lines in 2D space where each two each dimensions specify a
-    (x, y) node of the line.
-    """
-    style_opts = line_properties + ['cmap']
 
-    _nonvectorized_styles = ['cmap']
+    style_opts = base_properties + line_properties + ['cmap']
+
+    _nonvectorized_styles = base_properties + ['cmap']
 
     _plot_methods = dict(single='segment')
 
@@ -29,7 +26,11 @@ class SegmentPlot(GeomMixin, ColorbarPlot):
 
 class RectanglesPlot(GeomMixin, LegendPlot, ColorbarPlot):
 
-    style_opts = ['cmap', 'visible'] + line_properties + fill_properties
+    style_opts = (base_properties + line_properties + fill_properties +
+                  ['cmap', 'color', 'alpha'])
+
+    _nonvectorized_styles = ['cmap'] + base_properties
+
     _plot_methods = dict(single='rect')
     _batched_style_opts = line_properties + fill_properties
     _color_style = 'fill_color'
@@ -42,5 +43,3 @@ class RectanglesPlot(GeomMixin, LegendPlot, ColorbarPlot):
         data = {'x': (x1+x0)/2., 'y': (y1+y0)/2., 'width': x1-x0, 'height': y1-y0}
         mapping = {'x': 'x', 'y': 'y', 'width': 'width', 'height': 'height'}
         return data, mapping, style
-
-    
