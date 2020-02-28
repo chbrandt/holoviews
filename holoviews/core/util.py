@@ -538,7 +538,11 @@ def get_method_owner(method):
     """
     Gets the instance that owns the supplied method
     """
-    return method.__self__ if sys.version_info.major >= 3 else method.im_self
+    try:
+        subs = method.__self__ if sys.version_info.major >= 3 else method.im_self
+    except AttributeError as err:
+        subs = None
+    return subs
 
 
 def capitalize_unicode_name(s):
